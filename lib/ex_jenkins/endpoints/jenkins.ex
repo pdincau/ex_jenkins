@@ -12,7 +12,7 @@ defmodule ExJenkins.Jenkins do
 
   def cancel_quiet_down do
     post("cancelQuietDown", "")
-    |> handle_quiet_down_cancel_quiet_down_response(:quieted_down)
+    |> handle_quiet_down_cancel_quiet_down_response(:cancel_quieted_down)
   end
 
   def restart(mode \\ :safe) do
