@@ -10,3 +10,13 @@ def deps do
 end
 ```
 
+In your configuration file add something similar to:
+
+```elixir
+config :ex_jenkins,
+  host: "localhost",
+  port: "8080",
+  username: "username",
+  password: "password",
+  token: "mytoken"
+```
