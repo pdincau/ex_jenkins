@@ -55,6 +55,11 @@ defmodule ExJenkins.Jobs do
     |> handle_create_job_response
   end
 
+  def create(job, folder, config_file) do
+    request(:post, "job/" <> folder <> "/createItem?name=" <> job, config_file, [{"Content-Type", "text/xml"}], [])
+    |> handle_create_job_response
+  end
+
   def all do
     get("api/json?tree=jobs[name]")
     |> handle_all_job_response
