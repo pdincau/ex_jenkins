@@ -30,7 +30,6 @@ defmodule ExJenkins.Folders do
         iex> ExJenkins.Folders.delete("myfolder")
         {:ok, :deleted}
   """
-
   def delete(folder) do
     post("job/" <> folder <> "/doDelete", "")
     |> handle_delete_folder_response
