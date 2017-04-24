@@ -1,10 +1,22 @@
 defmodule ExJenkins.Queues do
 
+  @moduledoc """
+    This module provides functionalities to handle Jenkins queues.
+  """
+
   use HTTPoison.Base
 
   alias HTTPoison.{Response, Error}
   alias ExJenkins.Headers
 
+  @doc """
+    Retrieve information about an item in Jenkins queue.
+
+    ## Examples
+
+        iex> ExJenkins.Queues.info(1)
+        {:ok, {:executable_number, "2"}}
+  """
   def info(number) do
     case get("queue/item/" <> adapt_number(number) <> "/api/json") do
       {:ok, %Response{status_code: 200, body: body}} ->
@@ -15,6 +27,14 @@ defmodule ExJenkins.Queues do
     end
   end
 
+  @doc """
+    Cancel an item in Jenkins queue.
+
+    ## Examples
+
+        iex> ExJenkins.Queues.cancel(1)
+        {:ok, :canceled}
+  """
   def cancel(number) do
     case post("queue/cancelItem?id=" <> adapt_number(number), "") do
       {:ok, %Response{status_code: 302}} ->
