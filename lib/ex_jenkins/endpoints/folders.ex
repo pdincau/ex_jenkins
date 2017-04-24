@@ -1,14 +1,35 @@
 defmodule ExJenkins.Folders do
 
+  @moduledoc """
+  This module provides functionalities to handle Jenkins Folders (you need Jenkins Folder Plugin).
+  """
+
   use HTTPoison.Base
 
   alias HTTPoison.{Response, Error}
   alias ExJenkins.Headers
 
+  @doc """
+    Create a given `folder`.
+
+    ## Examples
+
+        iex> ExJenkins.Folders.create("myfolder")
+        {:ok, :created}
+  """
   def create(folder) do
     request(:post, "createItem?name=" <> folder <> rest_of_url(), "", [{"Content-Type", "application/x-www-form-urlencoded"}], [])
     |> handle_create_folder_response
   end
+
+  @doc """
+    Delete a given `folder`.
+
+    ## Examples
+
+        iex> ExJenkins.Folders.delete("myfolder")
+        {:ok, :deleted}
+  """
 
   def delete(folder) do
     post("job/" <> folder <> "/doDelete", "")
