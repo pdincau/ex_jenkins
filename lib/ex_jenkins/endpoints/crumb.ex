@@ -11,7 +11,9 @@ defmodule ExJenkins.Crumb do
 
   @doc """
     Issue a Jenkins crumb.
+
     ## Examples
+
         iex> ExJenkins.Crumb.issue
         {:ok, {{:value, "yourcrumb"}, {:request_field, "jenksinrequestfield"}}}
   """
