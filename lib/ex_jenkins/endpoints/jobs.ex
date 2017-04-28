@@ -1,15 +1,35 @@
 defmodule ExJenkins.Jobs do
 
+  @moduledoc """
+  This module provides functionalities to handle Jenkins Folders Jobs.
+  """
+
   use HTTPoison.Base
 
   alias HTTPoison.{Response, Error}
   alias ExJenkins.Headers
 
+  @doc """
+    Start a Jenkins job.
+
+    ## Examples
+
+        iex> ExJenkins.Jobs.start("myjob")
+        {:ok, {:started, location}}
+  """
   def start(job, token \\ ExJenkins.token) do
     post("job/" <> job <> "/build?token=" <> token, "")
     |> handle_start_job_response
   end
 
+  @doc """
+    Stop a Jenkins job.
+
+    ## Examples
+
+        iex> ExJenkins.Jobs.stop("myjob")
+        {:ok, {:stopped, location}}
+  """
   def stop(job, number \\ "lastBuild") do
     post("job/" <> job <> "/" <> adapt_number(number) <> "/stop", "")
     |> handle_stop_job_response
