@@ -60,6 +60,11 @@ defmodule ExJenkins.Jobs do
     |> handle_create_job_response
   end
 
+  def update(job, config_file) do
+    request(:post, "job/" <> job <> "/config.xml", config_file, [{"Content-Type", "text/xml"}], [])
+    |> handle_update_job_response
+  end
+
   def all do
     get("api/json?tree=jobs[name]")
     |> handle_all_job_response
@@ -150,6 +155,15 @@ defmodule ExJenkins.Jobs do
         {:ok, :created}
       {:ok, %Response{status_code: 400}} ->
         {:error, :cannot_create}
+      error_response ->
+        handle_error(error_response)
+    end
+  end
+
+  defp handle_update_job_response(response) do
+    case response do
+      {:ok, %Response{status_code: 200}} ->
+        {:ok, :created}
       error_response ->
         handle_error(error_response)
     end
