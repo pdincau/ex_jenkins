@@ -35,6 +35,14 @@ defmodule ExJenkins.Jobs do
     |> handle_stop_job_response
   end
 
+  @doc """
+    Retrieve the status of a build for a given Jenkins job.
+
+    ## Examples
+
+        iex> ExJenkins.Jobs.status("myjob", 3)
+        {:ok, {{:number, 3}, {:status, "SUCCESS"}}}
+  """
   def status(job, number \\ "lastBuild") do
     get("job/" <> job <> "/" <> adapt_number(number) <> "/api/json")
     |> handle_status_job_response
