@@ -9,7 +9,8 @@ defmodule ExJenkins do
   def base_url do
     host = Application.get_env(:ex_jenkins, :host)
     port = Application.get_env(:ex_jenkins, :port)
-    "http://" <> host <> ":" <> port <> "/"
+    protocol = Application.get_env(:ex_jenkins, :protocol) || "http"
+    protocol <> "://" <> host <> ":" <> port <> "/"
   end
 
   def basic_auth_string do

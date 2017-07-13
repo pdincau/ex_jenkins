@@ -15,6 +15,7 @@ In your configuration file add something similar to:
 ```elixir
 config :ex_jenkins,
   host: "localhost",
+  protocol: "http", # http or https.  Default is http
   port: "8080",
   username: "username",
   password: "password",
@@ -36,6 +37,3 @@ With ExJenkins you can consume the following Jenkins endpoints:
 * Queues: you can retrieve information on your Jenkins queue
 * Folders: you can create and delete folders
 * Crumb: you can request a Jenkins crumb
-
-
-
