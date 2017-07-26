@@ -23,6 +23,22 @@ defmodule ExJenkins.Jobs do
   end
 
   @doc """
+    Start a parameterized jenkins job
+
+    ## Examples
+
+        iex> ExJenkins.Jobs.start_with_parameters("myjob", foo: "bar", foo2: "bar2")
+        {:ok, {:started, location}}
+  """
+  def start_with_parameters(job, params, token \\ ExJenkins.token) do
+    key_values = Enum.map(params, fn({name, value}) -> %{name: name, value: value} end)
+    encoded_params = %{parameter: key_values} |> Poison.encode!()
+
+    post("job/" <> job <> "/buildWithParameters?token=" <> token, {:form, [json: encoded_params]})
+    |> handle_start_job_response
+  end
+
+  @doc """
     Stop a Jenkins job.
 
     ## Examples
