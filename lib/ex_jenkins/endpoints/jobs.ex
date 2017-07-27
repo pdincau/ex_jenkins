@@ -31,10 +31,7 @@ defmodule ExJenkins.Jobs do
         {:ok, {:started, location}}
   """
   def start_with_parameters(job, params, token \\ ExJenkins.token) do
-    key_values = Enum.map(params, fn({name, value}) -> %{name: name, value: value} end)
-    encoded_params = %{parameter: key_values} |> Poison.encode!()
-
-    post("job/" <> job <> "/buildWithParameters?token=" <> token, {:form, [json: encoded_params]})
+    post("job/" <> job <> "/buildWithParameters?token=" <> token, {:form, params})
     |> handle_start_job_response
   end
 
