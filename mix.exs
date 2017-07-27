@@ -1,13 +1,20 @@
 defmodule ExJenkins.Mixfile do
   use Mix.Project
 
+  @description """
+      Your Jenkins client written in elixir
+  """
+
   def project do
     [app: :ex_jenkins,
      version: "0.1.0",
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps()]
+     description: @description,
+     package: package(),
+     deps: deps(),
+     source_url: "https://github.com/pdincau/ex_jenkins"]
   end
 
   # Configuration for the OTP application
@@ -30,7 +37,14 @@ defmodule ExJenkins.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [{:httpoison, "~> 0.10.0"},
-     {:poison, "~> 3.1 or ~> 2.0"}
+     {:poison, "~> 3.1 or ~> 2.0"},
+     {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
+
+  defp package do
+    [ maintainers: ["pdincau, chazsconi"],
+      licenses: ["MIT"],
+      links: %{"Github" => "https://github.com/pdincau/ex_jenkins"} ]
+    end
 end
