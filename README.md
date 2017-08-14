@@ -1,6 +1,13 @@
 # ExJenkins
 
+
+[![Hex.pm](https://img.shields.io/hexpm/v/ex_jenkins.svg)](https://hex.pm/packages/ex_jenkins)
+
 **Your Jenkins client written in elixir**
+
+
+ExJenkins is client to consume the Jenkins API.
+
 
 ## Installation
 
@@ -37,3 +44,13 @@ With ExJenkins you can consume the following Jenkins endpoints:
 * Queues: you can retrieve information on your Jenkins queue
 * Folders: you can create and delete folders
 * Crumb: you can request a Jenkins crumb
+
+If you want to know more on using ExJenkins you may read the [online documentation][docs].
+
+You can also build the docs on your machine with:
+
+```bash
+mix docs
+```
+
+[docs]: https://hexdocs.pm/ex_jenkins
