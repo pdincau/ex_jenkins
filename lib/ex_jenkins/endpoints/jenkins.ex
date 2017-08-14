@@ -72,6 +72,8 @@ defmodule ExJenkins.Jenkins do
     case response do
       {:ok, %Response{status_code: 404}} ->
         {:error, :not_found}
+      {:ok, %Response{status_code: status_code}} ->
+        {:error, status_code}
       {:error, %Error{reason: _reason}} ->
         {:error, :generic_error}
     end
