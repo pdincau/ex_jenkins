@@ -44,7 +44,8 @@ defmodule ExJenkins.Jobs do
         iex> ExJenkins.Jobs.stop("myjob")
         {:ok, {:stopped, location}}
   """
-  def stop(job, number \\ "lastBuild") do
+  def stop(job, opts \\ []) do
+    number = Keyword.get(opts, :number, "lastBuild")
     post("job/" <> job <> "/" <> adapt_number(number) <> "/stop", "")
     |> handle_stop_job_response
   end
@@ -57,7 +58,8 @@ defmodule ExJenkins.Jobs do
         iex> ExJenkins.Jobs.status("myjob", 3)
         {:ok, {{:number, 3}, {:status, "SUCCESS"}}}
   """
-  def status(job, number \\ "lastBuild") do
+  def status(job, opts \\ []) do
+    number = Keyword.get(opts, :number, "lastBuild")
     get("job/" <> job <> "/" <> adapt_number(number) <> "/api/json")
     |> handle_status_job_response
   end
@@ -70,7 +72,8 @@ defmodule ExJenkins.Jobs do
         iex> ExJenkins.Jobs.log("myjob")
         {:ok, {:log, "your Jenkins job log"}}
   """
-  def log(job, number \\ "lastBuild") do
+  def log(job, opts \\ []) do
+    number = Keyword.get(opts, :number, "lastBuild")
     get("job/" <> job <> "/" <> adapt_number(number) <> "/consoleText")
     |> handle_log_job_response
   end
