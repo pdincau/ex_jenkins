@@ -10,29 +10,30 @@ defmodule ExJenkins.Jobs do
   alias ExJenkins.Headers
 
   @doc """
-    Start a Jenkins job.
+    Start a standard or parameterized jenkins job
 
     ## Examples
 
         iex> ExJenkins.Jobs.start("myjob")
         {:ok, {:started, location}}
-  """
-  def start(job, token \\ ExJenkins.token) do
-    post("job/" <> job <> "/build?token=" <> token, "")
-    |> handle_start_job_response
-  end
 
-  @doc """
-    Start a parameterized jenkins job
+        iex> ExJenkins.Jobs.start("myjob", params: [foo: "bar", foo2: "bar2"])
+        {:ok, {:started, location}}
 
-    ## Examples
-
-        iex> ExJenkins.Jobs.start_with_parameters("myjob", foo: "bar", foo2: "bar2")
+        ## You can also override token
+        iex> ExJenkins.Jobs.start("myjob", params: [foo: "bar", foo2: "bar2"], token: "anothertoken")
         {:ok, {:started, location}}
   """
-  def start_with_parameters(job, params, token \\ ExJenkins.token) do
-    post("job/" <> job <> "/buildWithParameters?token=" <> token, {:form, params})
-    |> handle_start_job_response
+  def start(job, opts \\ []) do
+    token = Keyword.get(opts, :token, ExJenkins.token)
+    params = Keyword.get(opts, :params, [])
+    response = case params do
+      [] ->
+        post("job/" <> job <> "/build?token=" <> token, "")
+      params ->
+        post("job/" <> job <> "/buildWithParameters?token=" <> token, {:form, params})
+    end
+    response |> handle_start_job_response
   end
 
   @doc """
