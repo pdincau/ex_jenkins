@@ -288,7 +288,7 @@ defmodule ExJenkins.Jobs do
   defp handle_update_job_response(response) do
     case response do
       {:ok, %Response{status_code: 200}} ->
-        {:ok, :created}
+        {:ok, :updated}
       error_response ->
         handle_error(error_response)
     end
