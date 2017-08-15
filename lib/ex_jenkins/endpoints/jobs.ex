@@ -62,51 +62,131 @@ defmodule ExJenkins.Jobs do
     |> handle_status_job_response
   end
 
+  @doc """
+    Retrieves the log of a Jenkins job.
+
+    ## Examples
+
+        iex> ExJenkins.Jobs.log("myjob")
+        {:ok, {:log, "your Jenkins job log"}}
+  """
   def log(job, number \\ "lastBuild") do
     get("job/" <> job <> "/" <> adapt_number(number) <> "/consoleText")
     |> handle_log_job_response
   end
 
+  @doc """
+    Enable a disabled Jenkins job.
+
+    ## Examples
+
+        iex> ExJenkins.Jobs.enable("myjob")
+        {:ok, :enabled}
+  """
   def enable(job) do
     post("job/" <> job <> "/enable", "")
     |> handle_enable_disable_job_response(:enabled)
   end
 
+  @doc """
+    Disable Jenkins job.
+
+    ## Examples
+
+        iex> ExJenkins.Jobs.disable("myjob")
+        {:ok, :disabled}
+  """
   def disable(job) do
     post("job/" <> job <> "/disable", "")
     |> handle_enable_disable_job_response(:disabled)
   end
 
+  @doc """
+    Delete Jenkins job.
+
+    ## Examples
+
+        iex> ExJenkins.Jobs.delete("myjob")
+        {:ok, :deleted}
+  """
   def delete(job) do
     post("job/" <> job <> "/doDelete", "")
     |> handle_delete_job_response
   end
 
+  @doc """
+    Creates a new Jenkins job copying it from another.
+
+    ## Examples
+
+        iex> ExJenkins.Jobs.copy("myjob", "myotherjob")
+        {:ok, {:log, "your Jenkins job log"}}
+  """
   def copy(from_job, to_job) do
     post("createItem?name=" <> to_job <> "&mode=copy&from=" <> from_job, "")
     |> handle_copy_job_response
   end
 
+  @doc """
+    Retrieves the configuration file of a Jenkins job.
+
+    ## Examples
+
+        iex> ExJenkins.Jobs.config_file("myjob")
+        {:ok, {:config_file, "your Jenkins job log"}}
+  """
   def config_file(job) do
     get("job/" <> job <> "/config.xml")
     |> handle_config_file_job_response
   end
 
+  @doc """
+    Creates a Jenkins job using a given configuration file.
+
+    ## Examples
+
+        iex> ExJenkins.Jobs.create("myjob", "xml configuration file")
+        {:ok, :created}
+  """
   def create(job, config_file) do
     request(:post, "createItem?name=" <> job, config_file, [{"Content-Type", "text/xml"}], [])
     |> handle_create_job_response
   end
 
+  @doc """
+    Creates a Jenkins job in a folder using a given configuration file.
+
+    ## Examples
+
+        iex> ExJenkins.Jobs.create("myjob", "folder", "xml configuration file")
+        {:ok, :created}
+  """
   def create(job, folder, config_file) do
     request(:post, "job/" <> folder <> "/createItem?name=" <> job, config_file, [{"Content-Type", "text/xml"}], [])
     |> handle_create_job_response
   end
 
+  @doc """
+    Updates a Jenkins job using a given configuration file.
+
+    ## Examples
+
+        iex> ExJenkins.Jobs.update("myjob", "xml configuration file")
+        {:ok, :updated}
+  """
   def update(job, config_file) do
     request(:post, "job/" <> job <> "/config.xml", config_file, [{"Content-Type", "text/xml"}], [])
     |> handle_update_job_response
   end
 
+  @doc """
+    Retrieves all Jenkins jobs.
+
+    ## Examples
+
+        iex> ExJenkins.Jobs.all
+        {:ok, ["job1", "job2", "jobN"]}
+  """
   def all do
     get("api/json?tree=jobs[name]")
     |> handle_all_job_response
