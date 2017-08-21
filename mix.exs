@@ -14,7 +14,8 @@ defmodule ExJenkins.Mixfile do
      description: @description,
      package: package(),
      deps: deps(),
-     source_url: "https://github.com/pdincau/ex_jenkins"]
+     source_url: "https://github.com/pdincau/ex_jenkins",
+     aliases: [test: "test --no-start"]]
   end
 
   # Configuration for the OTP application
