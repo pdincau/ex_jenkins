@@ -9,11 +9,13 @@ defmodule ExJenkins.Mixfile do
     [app: :ex_jenkins,
      version: "0.1.2",
      elixir: "~> 1.4",
+     elixirc_paths: elixirc_paths(Mix.env),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      description: @description,
      package: package(),
      deps: deps(),
+     aliases: [test: "test --no-start"],
      source_url: "https://github.com/pdincau/ex_jenkins"]
   end
 
@@ -25,6 +27,10 @@ defmodule ExJenkins.Mixfile do
      mod: {ExJenkins, []},
     applications: [:httpoison]]
   end
+
+  # Specifies which paths to compile per environment.
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_),     do: ["lib"]
 
   # Dependencies can be Hex packages:
   #
