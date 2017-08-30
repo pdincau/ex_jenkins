@@ -53,4 +53,19 @@ You can also build the docs on your machine with:
 mix docs
 ```
 
+## Testing
+
+The tests use a real Jenkins instance that is created in a local Docker container.
+
+To run the tests you need to have Docker installed.  This should work on both a Mac and Linux, although
+it will not work on Windows.
+
+Running `mix test` starts the Jenkins container (first pulling the image if necessary),
+waits for it to be ready (can take around 20 seconds), and then
+runs the tests against it.
+
+Once the tests complete, the container is stopped and removed.
+
+The container starts on port 8080 so you need to ensure that this is not being used by anything else.
+
 [docs]: https://hexdocs.pm/ex_jenkins
