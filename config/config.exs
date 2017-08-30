@@ -2,6 +2,10 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-# Import environment specific config. This must remain at the bottom
-# of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+config :ex_jenkins,
+  host: "localhost",
+  protocol: "http", # http or https.  Default is http
+  port: "8080",
+  username: "admin",
+  password: "password",
+  token: "password"
