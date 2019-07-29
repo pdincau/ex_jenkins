@@ -1,5 +1,4 @@
 defmodule ExJenkins.Jobs do
-
   @moduledoc """
   This module provides functionalities to handle Jenkins Folders Jobs.
   """
@@ -25,14 +24,18 @@ defmodule ExJenkins.Jobs do
         {:ok, {:started, location}}
   """
   def start(job, opts \\ []) do
-    token = Keyword.get(opts, :token, ExJenkins.token)
+    token = Keyword.get(opts, :token, ExJenkins.token())
     params = Keyword.get(opts, :params, [])
-    response = case params do
-      [] ->
-        post("job/" <> job <> "/build?token=" <> token, "")
-      params ->
-        post("job/" <> job <> "/buildWithParameters?token=" <> token, {:form, params})
-    end
+
+    response =
+      case params do
+        [] ->
+          post("job/" <> job <> "/build?token=" <> token, "")
+
+        params ->
+          post("job/" <> job <> "/buildWithParameters?token=" <> token, {:form, params})
+      end
+
     response |> handle_start_job_response
   end
 
@@ -46,6 +49,7 @@ defmodule ExJenkins.Jobs do
   """
   def stop(job, opts \\ []) do
     number = Keyword.get(opts, :number, "lastBuild")
+
     post("job/" <> job <> "/" <> adapt_number(number) <> "/stop", "")
     |> handle_stop_job_response
   end
@@ -60,6 +64,7 @@ defmodule ExJenkins.Jobs do
   """
   def status(job, opts \\ []) do
     number = Keyword.get(opts, :number, "lastBuild")
+
     get("job/" <> job <> "/" <> adapt_number(number) <> "/api/json")
     |> handle_status_job_response
   end
@@ -74,6 +79,7 @@ defmodule ExJenkins.Jobs do
   """
   def log(job, opts \\ []) do
     number = Keyword.get(opts, :number, "lastBuild")
+
     get("job/" <> job <> "/" <> adapt_number(number) <> "/consoleText")
     |> handle_log_job_response
   end
@@ -165,7 +171,13 @@ defmodule ExJenkins.Jobs do
         {:ok, :created}
   """
   def create(job, folder, config_file) do
-    request(:post, "job/" <> folder <> "/createItem?name=" <> job, config_file, [{"Content-Type", "text/xml"}], [])
+    request(
+      :post,
+      "job/" <> folder <> "/createItem?name=" <> job,
+      config_file,
+      [{"Content-Type", "text/xml"}],
+      []
+    )
     |> handle_create_job_response
   end
 
@@ -178,7 +190,13 @@ defmodule ExJenkins.Jobs do
         {:ok, :updated}
   """
   def update(job, config_file) do
-    request(:post, "job/" <> job <> "/config.xml", config_file, [{"Content-Type", "text/xml"}], [])
+    request(
+      :post,
+      "job/" <> job <> "/config.xml",
+      config_file,
+      [{"Content-Type", "text/xml"}],
+      []
+    )
     |> handle_update_job_response
   end
 
@@ -200,8 +218,10 @@ defmodule ExJenkins.Jobs do
       {:ok, %Response{status_code: 201, headers: headers}} ->
         {"Location", location} = Headers.extract(headers, "Location")
         {:ok, {:started, location}}
+
       {:ok, %Response{status_code: 409}} ->
         {:error, :disabled}
+
       error_response ->
         handle_error(error_response)
     end
@@ -212,6 +232,7 @@ defmodule ExJenkins.Jobs do
       {:ok, %Response{status_code: 302, headers: headers}} ->
         {"Location", location} = Headers.extract(headers, "Location")
         {:ok, {:stopped, location}}
+
       error_response ->
         handle_error(error_response)
     end
@@ -220,8 +241,9 @@ defmodule ExJenkins.Jobs do
   defp handle_status_job_response(response) do
     case response do
       {:ok, %Response{status_code: 200, body: body}} ->
-        json_body = body |> Poison.decode!
+        json_body = body |> Poison.decode!()
         {:ok, {{:number, json_body["number"]}, {:status, json_body["result"]}}}
+
       error_response ->
         handle_error(error_response)
     end
@@ -231,6 +253,7 @@ defmodule ExJenkins.Jobs do
     case response do
       {:ok, %Response{status_code: 200, body: body}} ->
         {:ok, {:log, body}}
+
       error_response ->
         handle_error(error_response)
     end
@@ -240,6 +263,7 @@ defmodule ExJenkins.Jobs do
     case response do
       {:ok, %Response{status_code: 302}} ->
         {:ok, toggle}
+
       error_response ->
         handle_error(error_response)
     end
@@ -249,6 +273,7 @@ defmodule ExJenkins.Jobs do
     case response do
       {:ok, %Response{status_code: 302}} ->
         {:ok, :deleted}
+
       error_response ->
         handle_error(error_response)
     end
@@ -258,8 +283,10 @@ defmodule ExJenkins.Jobs do
     case response do
       {:ok, %Response{status_code: 302}} ->
         {:ok, :created}
+
       {:ok, %Response{status_code: 400}} ->
         {:error, :cannot_copy}
+
       error_response ->
         handle_error(error_response)
     end
@@ -269,6 +296,7 @@ defmodule ExJenkins.Jobs do
     case response do
       {:ok, %Response{status_code: 200, body: body}} ->
         {:ok, {:config_file, body}}
+
       error_response ->
         handle_error(error_response)
     end
@@ -278,8 +306,10 @@ defmodule ExJenkins.Jobs do
     case response do
       {:ok, %Response{status_code: 200}} ->
         {:ok, :created}
+
       {:ok, %Response{status_code: 400}} ->
         {:error, :cannot_create}
+
       error_response ->
         handle_error(error_response)
     end
@@ -289,6 +319,7 @@ defmodule ExJenkins.Jobs do
     case response do
       {:ok, %Response{status_code: 200}} ->
         {:ok, :updated}
+
       error_response ->
         handle_error(error_response)
     end
@@ -297,9 +328,10 @@ defmodule ExJenkins.Jobs do
   defp handle_all_job_response(response) do
     case response do
       {:ok, %Response{status_code: 200, body: body}} ->
-        json_body = body |> Poison.decode!
+        json_body = body |> Poison.decode!()
         jobs = parse_jobs(json_body["jobs"])
         {:ok, jobs}
+
       error_response ->
         handle_error(error_response)
     end
@@ -309,8 +341,10 @@ defmodule ExJenkins.Jobs do
     case response do
       {:ok, %Response{status_code: 404}} ->
         {:error, :not_found}
+
       {:ok, %Response{status_code: status_code}} ->
         {:error, status_code}
+
       {:error, %Error{reason: _reason}} ->
         {:error, :generic_error}
     end
@@ -318,8 +352,8 @@ defmodule ExJenkins.Jobs do
 
   defp parse_jobs([]), do: []
 
-  defp parse_jobs([job|other_jobs]) do
-    [job["name"]|parse_jobs(other_jobs)]
+  defp parse_jobs([job | other_jobs]) do
+    [job["name"] | parse_jobs(other_jobs)]
   end
 
   defp process_request_headers(headers) do
@@ -329,7 +363,7 @@ defmodule ExJenkins.Jobs do
   end
 
   defp process_url(endpoint) do
-    ExJenkins.base_url <> endpoint
+    ExJenkins.base_url() <> endpoint
   end
 
   defp adapt_number(number) when is_integer(number) do
@@ -339,5 +373,4 @@ defmodule ExJenkins.Jobs do
   defp adapt_number("lastBuild") do
     "lastBuild"
   end
-
 end

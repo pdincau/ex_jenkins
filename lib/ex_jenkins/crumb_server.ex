@@ -1,5 +1,4 @@
 defmodule ExJenkins.CrumbServer do
-
   use GenServer
 
   alias ExJenkins.Crumb
@@ -22,8 +21,7 @@ defmodule ExJenkins.CrumbServer do
   end
 
   def handle_info(:set_crumb_info, crumb_info) do
-    {:ok, {{:value, value}, {:request_field, request_field}}} = Crumb.issue
-    {:noreply, %{crumb_info| value: value, request_field: request_field}}
+    {:ok, {{:value, value}, {:request_field, request_field}}} = Crumb.issue()
+    {:noreply, %{crumb_info | value: value, request_field: request_field}}
   end
-
 end
