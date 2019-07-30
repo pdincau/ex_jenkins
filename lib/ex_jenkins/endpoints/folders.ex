@@ -35,6 +35,7 @@ defmodule ExJenkins.Folders do
         iex> ExJenkins.Folders.delete("myfolder")
         {:ok, :deleted}
   """
+  @impl HTTPoison.Base
   def delete(folder) do
     post("job/" <> folder <> "/doDelete", "")
     |> handle_delete_folder_response
@@ -76,13 +77,15 @@ defmodule ExJenkins.Folders do
     end
   end
 
-  defp process_request_headers(headers) do
+  @impl HTTPoison.Base
+  def process_request_headers(headers) do
     headers
     |> Headers.add_authorization_header()
     |> Headers.add_crumb_header()
   end
 
-  defp process_url(endpoint) do
+  @impl HTTPoison.Base
+  def process_url(endpoint) do
     ExJenkins.base_url() <> endpoint
   end
 
