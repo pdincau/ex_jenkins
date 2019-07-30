@@ -58,13 +58,15 @@ defmodule ExJenkins.Queues do
     end
   end
 
-  defp process_request_headers(headers) do
+  @impl HTTPoison.Base
+  def process_request_headers(headers) do
     headers
     |> Headers.add_authorization_header()
     |> Headers.add_crumb_header()
   end
 
-  defp process_url(endpoint) do
+  @impl HTTPoison.Base
+  def process_url(endpoint) do
     ExJenkins.base_url() <> endpoint
   end
 

@@ -118,6 +118,7 @@ defmodule ExJenkins.Jobs do
         iex> ExJenkins.Jobs.delete("myjob")
         {:ok, :deleted}
   """
+  @impl HTTPoison.Base
   def delete(job) do
     post("job/" <> job <> "/doDelete", "")
     |> handle_delete_job_response
@@ -356,13 +357,15 @@ defmodule ExJenkins.Jobs do
     [job["name"] | parse_jobs(other_jobs)]
   end
 
-  defp process_request_headers(headers) do
+  @impl HTTPoison.Base
+  def process_request_headers(headers) do
     headers
     |> Headers.add_authorization_header()
     |> Headers.add_crumb_header()
   end
 
-  defp process_url(endpoint) do
+  @impl HTTPoison.Base
+  def process_url(endpoint) do
     ExJenkins.base_url() <> endpoint
   end
 
