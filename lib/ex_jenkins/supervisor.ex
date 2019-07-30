@@ -9,5 +9,4 @@ defmodule ExJenkins.Supervisor do
     children = [worker(ExJenkins.CrumbServer, [], restart: :permanent)]
     supervise(children, strategy: :one_for_one)
   end
-
 end

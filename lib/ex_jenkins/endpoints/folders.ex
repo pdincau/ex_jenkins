@@ -1,5 +1,4 @@
 defmodule ExJenkins.Folders do
-
   @moduledoc """
   This module provides functionalities to handle Jenkins Folders (you need Jenkins Folder Plugin).
   """
@@ -18,7 +17,13 @@ defmodule ExJenkins.Folders do
         {:ok, :created}
   """
   def create(folder) do
-    request(:post, "createItem?name=" <> folder <> rest_of_url(), "", [{"Content-Type", "application/x-www-form-urlencoded"}], [])
+    request(
+      :post,
+      "createItem?name=" <> folder <> rest_of_url(),
+      "",
+      [{"Content-Type", "application/x-www-form-urlencoded"}],
+      []
+    )
     |> handle_create_folder_response
   end
 
@@ -39,8 +44,10 @@ defmodule ExJenkins.Folders do
     case response do
       {:ok, %Response{status_code: 302}} ->
         {:ok, :created}
+
       {:ok, %Response{status_code: 400}} ->
         {:error, :cannot_create}
+
       error_response ->
         handle_error(error_response)
     end
@@ -50,6 +57,7 @@ defmodule ExJenkins.Folders do
     case response do
       {:ok, %Response{status_code: 302}} ->
         {:ok, :deleted}
+
       error_response ->
         handle_error(error_response)
     end
@@ -59,8 +67,10 @@ defmodule ExJenkins.Folders do
     case response do
       {:ok, %Response{status_code: 404}} ->
         {:error, :not_found}
+
       {:ok, %Response{status_code: status_code}} ->
         {:error, status_code}
+
       {:error, %Error{reason: _reason}} ->
         {:error, :generic_error}
     end
@@ -73,7 +83,7 @@ defmodule ExJenkins.Folders do
   end
 
   defp process_url(endpoint) do
-    ExJenkins.base_url <> endpoint
+    ExJenkins.base_url() <> endpoint
   end
 
   defp rest_of_url do

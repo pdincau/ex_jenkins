@@ -1,5 +1,4 @@
 defmodule ExJenkins.Queues do
-
   @moduledoc """
     This module provides functionalities to handle Jenkins queues.
   """
@@ -20,8 +19,9 @@ defmodule ExJenkins.Queues do
   def info(number) do
     case get("queue/item/" <> adapt_number(number) <> "/api/json") do
       {:ok, %Response{status_code: 200, body: body}} ->
-        json_body = body |> Poison.decode!
+        json_body = body |> Poison.decode!()
         {:ok, {:executable_number, json_body["executable"]["number"]}}
+
       error_response ->
         handle_error(error_response)
     end
@@ -39,6 +39,7 @@ defmodule ExJenkins.Queues do
     case post("queue/cancelItem?id=" <> adapt_number(number), "") do
       {:ok, %Response{status_code: 302}} ->
         {:ok, :canceled}
+
       error_response ->
         handle_error(error_response)
     end
@@ -48,8 +49,10 @@ defmodule ExJenkins.Queues do
     case response do
       {:ok, %Response{status_code: 404}} ->
         {:error, :not_found}
+
       {:ok, %Response{status_code: status_code}} ->
         {:error, status_code}
+
       {:error, %Error{reason: _reason}} ->
         {:error, :generic_error}
     end
@@ -62,11 +65,10 @@ defmodule ExJenkins.Queues do
   end
 
   defp process_url(endpoint) do
-    ExJenkins.base_url <> endpoint
+    ExJenkins.base_url() <> endpoint
   end
 
   defp adapt_number(number) when is_integer(number) do
     Integer.to_string(number)
   end
-
 end
