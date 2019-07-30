@@ -1,9 +1,8 @@
 defmodule ExJenkins do
-
   use Application
 
   def start(_type, _args) do
-    ExJenkins.Supervisor.start_link
+    ExJenkins.Supervisor.start_link()
   end
 
   def base_url do
@@ -22,5 +21,4 @@ defmodule ExJenkins do
   def token do
     Application.get_env(:ex_jenkins, :token)
   end
-
 end

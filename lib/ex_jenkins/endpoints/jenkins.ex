@@ -1,5 +1,4 @@
 defmodule ExJenkins.Jenkins do
-
   @moduledoc """
     This module provides functionalities to deal with Jenkins.
   """
@@ -35,7 +34,6 @@ defmodule ExJenkins.Jenkins do
     |> handle_quiet_down_cancel_quiet_down_response(:cancel_quieted_down)
   end
 
-
   @doc """
     Restarts Jenkins.
 
@@ -54,6 +52,7 @@ defmodule ExJenkins.Jenkins do
     case response do
       {:ok, %Response{status_code: 302}} ->
         {:ok, :restart_command_issued}
+
       error_response ->
         handle_error(error_response)
     end
@@ -63,6 +62,7 @@ defmodule ExJenkins.Jenkins do
     case response do
       {:ok, %Response{status_code: 302}} ->
         {:ok, toggle}
+
       error_response ->
         handle_error(error_response)
     end
@@ -72,8 +72,10 @@ defmodule ExJenkins.Jenkins do
     case response do
       {:ok, %Response{status_code: 404}} ->
         {:error, :not_found}
+
       {:ok, %Response{status_code: status_code}} ->
         {:error, status_code}
+
       {:error, %Error{reason: _reason}} ->
         {:error, :generic_error}
     end
@@ -84,7 +86,7 @@ defmodule ExJenkins.Jenkins do
   defp restart_endpoint(:hard), do: "restart"
 
   defp process_url(endpoint) do
-    ExJenkins.base_url <> endpoint
+    ExJenkins.base_url() <> endpoint
   end
 
   defp process_request_headers(headers) do
@@ -92,5 +94,4 @@ defmodule ExJenkins.Jenkins do
     |> Headers.add_authorization_header()
     |> Headers.add_crumb_header()
   end
-
 end
