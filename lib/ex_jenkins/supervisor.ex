@@ -6,7 +6,12 @@ defmodule ExJenkins.Supervisor do
   end
 
   def init([]) do
-    children = [worker(ExJenkins.CrumbServer, [], restart: :permanent)]
+    children =
+      case Mix.env() do
+        :test -> []
+        _ -> [worker(ExJenkins.CrumbServer, [], restart: :permanent)]
+      end
+
     supervise(children, strategy: :one_for_one)
   end
 end
