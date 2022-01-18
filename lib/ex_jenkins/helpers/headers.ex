@@ -2,7 +2,8 @@ defmodule ExJenkins.Headers do
   alias ExJenkins.CrumbServer
 
   def extract(headers, name) do
-    Enum.find(headers, &(String.downcase(elem(&1, 0)) == String.downcase(name)))
+    downcase_name = String.downcase(name)
+    Enum.find(headers, &(String.downcase(elem(&1, 0)) == downcase_name))
   end
 
   def add_authorization_header(headers) do
