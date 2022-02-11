@@ -217,7 +217,7 @@ defmodule ExJenkins.Jobs do
   defp handle_start_job_response(response) do
     case response do
       {:ok, %Response{status_code: 201, headers: headers}} ->
-        {"Location", location} = Headers.extract(headers, "Location")
+        {_, location} = Headers.extract(headers, "Location")
         {:ok, {:started, location}}
 
       {:ok, %Response{status_code: 409}} ->
@@ -231,7 +231,7 @@ defmodule ExJenkins.Jobs do
   defp handle_stop_job_response(response) do
     case response do
       {:ok, %Response{status_code: 302, headers: headers}} ->
-        {"Location", location} = Headers.extract(headers, "Location")
+        {_, location} = Headers.extract(headers, "Location")
         {:ok, {:stopped, location}}
 
       error_response ->
